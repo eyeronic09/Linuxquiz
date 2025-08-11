@@ -2,6 +2,7 @@ package com.example.linuxquiz.HomeScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -12,23 +13,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.linuxquiz.HomeScreen.component.TopicCard
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel , onClick : () -> Unit = {}) {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun HomeScreen(viewModel: HomeViewModel , onTopicClick  : (Int) -> Unit ) {
+    Column(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
         val topics by viewModel.topics.collectAsState()
         LazyColumn() {
-            items(topics , key = { topic -> topic.id }) { topics ->
+            items(topics , key = { it -> it.id }) { topics ->
                 TopicCard(
                     topic = topics ,
-                    onClick = { onClick},
-
+                    onClick = { onTopicClick(topics.id) },
                 )
             }
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(HomeViewModel())
 }

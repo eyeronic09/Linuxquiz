@@ -4,15 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.linuxquiz.HomeScreen.HomeScreen
 import com.example.linuxquiz.HomeScreen.HomeViewModel
-import com.example.linuxquiz.Question.QuizScreen
+import com.example.linuxquiz.Navigation.Screen
+import com.example.linuxquiz.Topic1QuestionQuiz.QuizScreen
+import com.example.linuxquiz.Topic1QuestionQuiz.QuizViewModel
 import com.example.linuxquiz.ui.theme.LinuxquizTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,9 +24,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LinuxquizTheme {
-
-
+                AppNav()
             }
         }
+    }
+}
+
+@Composable
+fun AppNav() {
+    val navController = rememberNavController()
+    NavHost(navController , startDestination = Screen.Home.route) {
+        composable(Screen.Home.route) {
+            val viewModel : HomeViewModel = viewModel()
+            HomeScreen(
+                viewModel = viewModel,
+                onTopicClick = { topicId ->
+                    navController.navigate(Screen.Quiz.createRoute(topicId))
+                }
+            )
+        }
+        composable(Screen.Quiz.route ,
+            arguments =  listOf(navArgument("topicId"){type = NavType.IntType})){ backStack ->
+            val topicId = backStack.arguments?.getInt("topicId")
+            val quizViewModel :QuizViewModel = viewModel()
+            QuizScreen(viewModel = quizViewModel)
+        }
+
     }
 }

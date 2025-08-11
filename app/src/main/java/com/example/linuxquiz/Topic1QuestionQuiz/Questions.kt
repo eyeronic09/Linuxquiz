@@ -1,4 +1,4 @@
-package com.example.linuxquiz.Question
+package com.example.linuxquiz.Topic1QuestionQuiz
 
 data class Question(
     val id: Int,
