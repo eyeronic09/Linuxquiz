@@ -1,5 +1,6 @@
 package com.example.linuxquiz.HomeScreen.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,10 +19,11 @@ import com.example.linuxquiz.HomeScreen.Topic
 
 
 @Composable
-fun TopicCard(topic: Topic) {
+fun TopicCard(topic: Topic , onClick : () -> Unit = {}) {
     OutlinedCard(modifier = Modifier
         .padding(16.dp)
-        .fillMaxWidth()) {
+        .fillMaxWidth()
+        .clickable{ onClick() }) {
         Column(modifier = Modifier.padding(16.dp ).fillMaxWidth()) {
             Text(
                 text = topic.topic,
@@ -35,10 +37,11 @@ fun TopicCard(topic: Topic) {
         }
     }
 }
-
-
-@Preview(showSystemUi = true)
+@Preview
 @Composable
 fun TopicCardPreview() {
-    TopicCard(Topic(1, "Preview Topic", "Preview Description", 10))
+    TopicCard(Topic(
+        id = 1, topic = "topic", description = "description", questionsCount = 10,
+        questions = emptyList()
+    ))
 }
