@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
-fun QuizScreen(viewModel: QuizViewModel ) {
+fun QuizScreen(viewModel: QuizViewModel) {
     val question by viewModel.questions.collectAsState()
     var selectedAnswer by remember { mutableIntStateOf(-1) }
     var currentQuestionIndex by remember { mutableIntStateOf(0) }
@@ -33,28 +33,33 @@ fun QuizScreen(viewModel: QuizViewModel ) {
 
     var score by remember { mutableIntStateOf(0) }
 
-    if (currentQuestion != null){
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.Center ,
-            horizontalAlignment = Alignment.CenterHorizontally)
+    if (currentQuestion != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
         {
             Text(currentQuestion.text)
             currentQuestion.options.forEachIndexed { index, options ->
-              val isSelected = index == selectedAnswer
-              val isCorrect = index == currentQuestion.correctAnswerIndex
-              Log.d("QuizScreen", "Clicked: $index, correct: $isCorrect, selected: $isSelected")
-              OutlinedButton(onClick = {
-                  if (isSelected != isCorrect){
+                val isSelected = index == selectedAnswer
+                val isCorrect = index == currentQuestion.correctAnswerIndex
+                Log.d("QuizScreen", "Clicked: $index, correct: $isCorrect, selected: $isSelected")
+                OutlinedButton(onClick = {
+                    if (isSelected != isCorrect) {
                         currentQuestionIndex++
                         selectedAnswer = -1
-                  }
-              }) {
-                  Text(options)
-              }
+                    }
+                }) {
+                    Text(options)
+                }
             }
         }
     }
 }
+
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(showSystemUi = true)
 @Composable

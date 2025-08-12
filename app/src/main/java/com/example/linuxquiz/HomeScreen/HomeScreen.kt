@@ -1,5 +1,6 @@
 package com.example.linuxquiz.HomeScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -17,12 +18,14 @@ fun HomeScreen(viewModel: HomeViewModel , onTopicClick  : (Int) -> Unit ) {
     Column(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
         val topics by viewModel.topics.collectAsState()
         LazyColumn() {
-            items(topics , key = { it -> it.id }) { topics ->
+            items(items = topics , key = { it -> it.id }) { topics ->
+
                 TopicCard(
                     topic = topics ,
                     onClick = { onTopicClick(topics.id) },
                 )
             }
         }
+
     }
 }

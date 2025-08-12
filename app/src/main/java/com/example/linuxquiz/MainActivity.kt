@@ -1,10 +1,12 @@
 package com.example.linuxquiz
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -45,10 +47,26 @@ fun AppNav() {
         }
         composable(Screen.Quiz.route ,
             arguments =  listOf(navArgument("topicId"){type = NavType.IntType})){ backStack ->
-            val topicId = backStack.arguments?.getInt("topicId")
-            val quizViewModel :QuizViewModel = viewModel()
-            QuizScreen(viewModel = quizViewModel)
-        }
+            val topicId = backStack.arguments?.getInt("topicId") ?: 0
 
+            when (topicId) {
+                1 -> {
+                    val viewModel: QuizViewModel = viewModel()
+                    QuizScreen(viewModel = viewModel)
+                }
+                2 -> {
+                    val viewModel: QuizViewModel = viewModel()
+                    QuizScreen(viewModel = viewModel)
+                }
+            }
+
+
+        }
     }
+}
+
+@Preview
+@Composable
+private fun prevs() {
+    AppNav()
 }
