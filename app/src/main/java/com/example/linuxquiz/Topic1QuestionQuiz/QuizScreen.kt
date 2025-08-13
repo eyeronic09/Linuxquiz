@@ -3,9 +3,11 @@ package com.example.linuxquiz.Topic1QuestionQuiz
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -20,42 +22,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-
+import com.example.linuxquiz.Topic1QuestionQuiz.QuizLayout.QuizScreen
+import com.example.linuxquiz.Topic1QuestionQuiz.QuizLayout.quizLayOutScreen
 
 @Composable
-fun QuizScreen(viewModel: QuizViewModel) {
-    val question by viewModel.questions.collectAsState()
-    var selectedAnswer by remember { mutableIntStateOf(-1) }
-    var currentQuestionIndex by remember { mutableIntStateOf(0) }
+fun Topic1QuizScreen(viewModel: QuizViewModel) {
+    val questions by viewModel.questions.collectAsStateWithLifecycle()
 
-    val currentQuestion = question.getOrNull(currentQuestionIndex)
+    if (questions.isNotEmpty()) {
+        quizLayOutScreen(
+            questions = questions,
+            onQuizComplete = {score, total ->
 
-    var score by remember { mutableIntStateOf(0) }
-
-    if (currentQuestion != null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            Text(currentQuestion.text)
-            currentQuestion.options.forEachIndexed { index, options ->
-                val isSelected = index == selectedAnswer
-                val isCorrect = index == currentQuestion.correctAnswerIndex
-                Log.d("QuizScreen", "Clicked: $index, correct: $isCorrect, selected: $isSelected")
-                OutlinedButton(onClick = {
-                    if (isSelected != isCorrect) {
-                        currentQuestionIndex++
-                        selectedAnswer = -1
-                    }
-                }) {
-                    Text(options)
-                }
             }
+        )
+    } else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }
@@ -65,5 +50,5 @@ fun QuizScreen(viewModel: QuizViewModel) {
 @Composable
 fun QuizScreenPreview() {
     val viewModel = QuizViewModel()
-    QuizScreen(viewModel = viewModel)
+    Topic1QuizScreen(viewModel = viewModel)
 }

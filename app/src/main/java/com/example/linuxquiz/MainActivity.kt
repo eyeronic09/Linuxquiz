@@ -16,8 +16,10 @@ import androidx.navigation.navArgument
 import com.example.linuxquiz.HomeScreen.HomeScreen
 import com.example.linuxquiz.HomeScreen.HomeViewModel
 import com.example.linuxquiz.Navigation.Screen
-import com.example.linuxquiz.Topic1QuestionQuiz.QuizScreen
+import com.example.linuxquiz.Topic1QuestionQuiz.Quiz1Screen
 import com.example.linuxquiz.Topic1QuestionQuiz.QuizViewModel
+import com.example.linuxquiz.Topic2QuestionQuiz.Quiz2Screen
+import com.example.linuxquiz.Topic2QuestionQuiz.ViewModel1
 import com.example.linuxquiz.ui.theme.LinuxquizTheme
 
 class MainActivity : ComponentActivity() {
@@ -52,11 +54,17 @@ fun AppNav() {
             when (topicId) {
                 1 -> {
                     val viewModel: QuizViewModel = viewModel()
-                    QuizScreen(viewModel = viewModel)
+                    Quiz1Screen(viewModel = viewModel)
                 }
                 2 -> {
-                    val viewModel: QuizViewModel = viewModel()
-                    QuizScreen(viewModel = viewModel)
+                    val view2Model: ViewModel1 = viewModel()
+                    Quiz2Screen(viewModel = view2Model)
+                }
+                3 -> {
+
+                }
+                else -> {
+                    Log.d("AppNav", "Invalid topicId: $topicId")
                 }
             }
 

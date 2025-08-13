@@ -27,8 +27,5 @@ class HomeViewModel : ViewModel() {
         _topics.value = topicsList
     }
 
-    // Add a function to get questions for a specific topic
-    fun getQuestionsForTopic(topicId: Int) {
-
-    }
 }
+
