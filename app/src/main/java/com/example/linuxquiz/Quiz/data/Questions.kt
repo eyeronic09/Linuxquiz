@@ -1,4 +1,4 @@
-package com.example.linuxquiz.Topic1QuestionQuiz
+package com.example.linuxquiz.Quiz.data
 
 data class Question(
     val id: Int,
@@ -7,3 +7,4 @@ data class Question(
     val correctAnswerIndex: Int, // index of the correct answer in options list
     val explanation: String = "" // Optional explanation for the answer
 )
+

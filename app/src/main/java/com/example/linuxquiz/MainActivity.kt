@@ -1,7 +1,6 @@
 package com.example.linuxquiz
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,10 +15,8 @@ import androidx.navigation.navArgument
 import com.example.linuxquiz.HomeScreen.HomeScreen
 import com.example.linuxquiz.HomeScreen.HomeViewModel
 import com.example.linuxquiz.Navigation.Screen
-import com.example.linuxquiz.Topic1QuestionQuiz.Quiz1Screen
-import com.example.linuxquiz.Topic1QuestionQuiz.QuizViewModel
-import com.example.linuxquiz.Topic2QuestionQuiz.Quiz2Screen
-import com.example.linuxquiz.Topic2QuestionQuiz.ViewModel1
+import com.example.linuxquiz.Quiz.presentation.Quiz1Screen
+import com.example.linuxquiz.Quiz.presentation.QuizViewModel
 import com.example.linuxquiz.ui.theme.LinuxquizTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,22 +48,10 @@ fun AppNav() {
             arguments =  listOf(navArgument("topicId"){type = NavType.IntType})){ backStack ->
             val topicId = backStack.arguments?.getInt("topicId") ?: 0
 
-            when (topicId) {
-                1 -> {
-                    val viewModel: QuizViewModel = viewModel()
-                    Quiz1Screen(viewModel = viewModel)
-                }
-                2 -> {
-                    val view2Model: ViewModel1 = viewModel()
-                    Quiz2Screen(viewModel = view2Model)
-                }
-                3 -> {
+            val viewModel : QuizViewModel = viewModel()
+            Quiz1Screen(viewModel = viewModel , topicId)
 
-                }
-                else -> {
-                    Log.d("AppNav", "Invalid topicId: $topicId")
-                }
-            }
+
 
 
         }

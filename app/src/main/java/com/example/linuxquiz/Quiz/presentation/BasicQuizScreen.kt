@@ -1,41 +1,27 @@
-package com.example.linuxquiz.Topic1QuestionQuiz
+package com.example.linuxquiz.Quiz.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.linuxquiz.Topic1QuestionQuiz.QuizLayout.QuizScreen
-import com.example.linuxquiz.Topic1QuestionQuiz.QuizLayout.quizLayOutScreen
+import com.example.linuxquiz.Quiz.presentation.QuizViewModel
+import com.example.linuxquiz.Quiz.component.QuizLayOutScreen
 
 @Composable
-fun Topic1QuizScreen(viewModel: QuizViewModel) {
+fun Quiz1Screen(viewModel: QuizViewModel  , category: Int) {
     val questions by viewModel.questions.collectAsStateWithLifecycle()
-
+    viewModel.loadCategory(category)
     if (questions.isNotEmpty()) {
-        quizLayOutScreen(
+        QuizLayOutScreen (
             questions = questions,
             onQuizComplete = {score, total ->
-
+                // TODO : Add room updata
             }
         )
     } else {
@@ -50,5 +36,5 @@ fun Topic1QuizScreen(viewModel: QuizViewModel) {
 @Composable
 fun QuizScreenPreview() {
     val viewModel = QuizViewModel()
-    Topic1QuizScreen(viewModel = viewModel)
+    Quiz1Screen(viewModel = viewModel , 2)
 }

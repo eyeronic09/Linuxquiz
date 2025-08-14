@@ -1,4 +1,4 @@
-package com.example.linuxquiz.Topic1QuestionQuiz.QuizLayout
+package com.example.linuxquiz.Quiz.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,16 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.linuxquiz.Topic1QuestionQuiz.Question
+import com.example.linuxquiz.Quiz.data.Question
 
 
 @Composable
 fun QuizLayOutScreen(
     questions: List<Question>,
-    onQuizComplete: (score: Int, total: Int) -> Unit
+    onQuizComplete: (score: Int, total: Int) -> Unit,
 ) {
-    var currentQuestionIndex by remember { mutableIntStateOf(0) }
 
+    var currentQuestionIndex by remember { mutableIntStateOf(0) }
     var selectedAnswer by remember { mutableIntStateOf(-1) }
     var score by remember { mutableIntStateOf(0) }
     var showResult by remember { mutableStateOf(false) }

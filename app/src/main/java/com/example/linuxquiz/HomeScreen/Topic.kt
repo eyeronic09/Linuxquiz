@@ -1,6 +1,6 @@
 package com.example.linuxquiz.HomeScreen
 
-import com.example.linuxquiz.Topic1QuestionQuiz.Question
+import com.example.linuxquiz.Quiz.data.Question
 
 data class Topic(
     val id : Int,
