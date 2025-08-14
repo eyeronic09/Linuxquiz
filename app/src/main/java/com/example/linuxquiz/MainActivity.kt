@@ -34,9 +34,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNav() {
     val navController = rememberNavController()
-    NavHost(navController , startDestination = Screen.Home.route) {
+    NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
-            val viewModel : HomeViewModel = viewModel()
+            val viewModel: HomeViewModel = viewModel()
             HomeScreen(
                 viewModel = viewModel,
                 onTopicClick = { topicId ->
@@ -44,16 +44,13 @@ fun AppNav() {
                 }
             )
         }
-        composable(Screen.Quiz.route ,
-            arguments =  listOf(navArgument("topicId"){type = NavType.IntType})){ backStack ->
+        composable(
+            Screen.Quiz.route,
+            arguments = listOf(navArgument("topicId") { type = NavType.IntType })
+        ) { backStack ->
             val topicId = backStack.arguments?.getInt("topicId") ?: 0
-
-            val viewModel : QuizViewModel = viewModel()
-            Quiz1Screen(viewModel = viewModel , topicId)
-
-
-
-
+            val viewModel: QuizViewModel = viewModel()
+            Quiz1Screen(viewModel = viewModel, topicId)
         }
     }
 }
