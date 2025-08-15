@@ -1,14 +1,11 @@
 package com.example.linuxquiz.Quiz.presentation
 
 import android.util.Log
-import androidx.compose.ui.unit.IntRect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.linuxquiz.Quiz.data.room.Question
 import com.example.linuxquiz.Quiz.data.room.Repository.QuizDao
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -37,10 +34,7 @@ class QuizViewModel(private val quizDao: QuizDao) : ViewModel() {
             try {
                 // Check if the answer is correct
                 val isCorrect = currentQuestion.correctAnswerIndex == selectedAnswerIndex
-                
-                // Log before updating
-                Log.d("QuizViewModel", "Updating question ${currentQuestion.id} with selectedAnswer: $selectedAnswerIndex, isCorrect: $isCorrect")
-                
+
                 // Update the question in the database with the new isCorrect value
                 quizDao.update(
                     currentQuestion.copy(
