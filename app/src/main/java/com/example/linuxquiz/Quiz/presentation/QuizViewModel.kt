@@ -1,22 +1,39 @@
 package com.example.linuxquiz.Quiz.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.linuxquiz.HomeScreen.Topic
-import com.example.linuxquiz.Quiz.data.Question
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.linuxquiz.Quiz.data.room.Question
+import com.example.linuxquiz.Quiz.data.room.Repository.QuizDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class QuizViewModel : ViewModel() {
+class QuizViewModel(private val quizDao: QuizDao) : ViewModel() {
     private val _questions = MutableStateFlow<List<Question>>(emptyList())
     val questions: StateFlow<List<Question>> get() = _questions
 
+    private val _currentQuestionIndex = MutableStateFlow(0)
+    val currentQuestionIndex: StateFlow<Int> get() = _currentQuestionIndex
+
+
     fun loadCategory(categoryKey: Int) {
-        _questions.value = Category.questions[categoryKey] ?: emptyList()
+        val currentQuestion = Category.questions[categoryKey] ?: emptyList()
+        Log.d("loadedCurrentQuestion","$currentQuestion" )
+
     }
+    fun submitAnswer(selectedAnswerIndex : Int){
+        val currentQuestion = _questions.value.getOrNull(_currentQuestionIndex.value) ?: return
+        Log.d("DaoCurrentQuestion","$currentQuestion" )
+        if ( currentQuestion.correctAnswerIndex == selectedAnswerIndex) {
+            viewModelScope.launch {
+                quizDao.update(currentQuestion.copy(isCorrect = true))
+            }
+        }
 
-
-
+    }
 
     companion object Category {
         val questions: Map<Int, List<Question>> = mapOf(
@@ -67,5 +84,17 @@ class QuizViewModel : ViewModel() {
                 )
             ),
         )
+    }
+
+    class QuizViewModelFactory(
+        private val quizDao: QuizDao
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(QuizViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return QuizViewModel(quizDao) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }

@@ -17,11 +17,13 @@ import com.example.linuxquiz.Quiz.component.QuizLayOutScreen
 fun Quiz1Screen(viewModel: QuizViewModel  , category: Int) {
     val questions by viewModel.questions.collectAsStateWithLifecycle()
     viewModel.loadCategory(category)
+    val ci = viewModel.currentQuestionIndex
+
     if (questions.isNotEmpty()) {
         QuizLayOutScreen (
             questions = questions,
             onQuizComplete = {score, total ->
-                // TODO : Add room updata
+                viewModel.submitAnswer(ci.value)
             }
         )
     } else {
@@ -29,12 +31,4 @@ fun Quiz1Screen(viewModel: QuizViewModel  , category: Int) {
             CircularProgressIndicator()
         }
     }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showSystemUi = true)
-@Composable
-fun QuizScreenPreview() {
-    val viewModel = QuizViewModel()
-    Quiz1Screen(viewModel = viewModel , 2)
 }

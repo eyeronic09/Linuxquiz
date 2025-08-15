@@ -1,11 +1,15 @@
 package com.example.linuxquiz
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +19,8 @@ import androidx.navigation.navArgument
 import com.example.linuxquiz.HomeScreen.HomeScreen
 import com.example.linuxquiz.HomeScreen.HomeViewModel
 import com.example.linuxquiz.Navigation.Screen
+import com.example.linuxquiz.ProgressScreen.progressScreen
+import com.example.linuxquiz.Quiz.data.room.Repository.QuizDataBase
 import com.example.linuxquiz.Quiz.presentation.Quiz1Screen
 import com.example.linuxquiz.Quiz.presentation.QuizViewModel
 import com.example.linuxquiz.ui.theme.LinuxquizTheme
@@ -33,6 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNav() {
+    val context = LocalContext.current
     val navController = rememberNavController()
     NavHost(navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
@@ -41,17 +48,31 @@ fun AppNav() {
                 viewModel = viewModel,
                 onTopicClick = { topicId ->
                     navController.navigate(Screen.Quiz.createRoute(topicId))
-                }
+                },
+                navController = navController
             )
+        }
+        composable(Screen.Progress.route) {
+            progressScreen(navController = navController)
+
         }
         composable(
             Screen.Quiz.route,
             arguments = listOf(navArgument("topicId") { type = NavType.IntType })
         ) { backStack ->
             val topicId = backStack.arguments?.getInt("topicId") ?: 0
-            val viewModel: QuizViewModel = viewModel()
+            val quizDao = QuizDataBase.getDatabase(context.applicationContext).quizDao()
+            val viewModel: QuizViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return QuizViewModel(quizDao) as T
+                    }
+                }
+            )
             Quiz1Screen(viewModel = viewModel, topicId)
         }
+
     }
 }
 
