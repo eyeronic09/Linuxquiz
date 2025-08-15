@@ -30,6 +30,8 @@ import com.example.linuxquiz.Quiz.data.room.Question
 fun QuizLayOutScreen(
     questions: List<Question>,
     onQuizComplete: (score: Int, total: Int) -> Unit,
+    onAnswerSelected  : (answerIndex : Int) -> Unit
+
 ) {
 
     var currentQuestionIndex by remember { mutableIntStateOf(0) }
@@ -90,6 +92,9 @@ fun QuizLayOutScreen(
                 OutlinedButton(
                     onClick = {
                         selectedAnswer = index
+                        // Notify parent about the selected answer
+                        onAnswerSelected(index)
+                        // Update score if the answer is correct
                         if (isCorrect) {
                             score++
                         }
@@ -102,7 +107,8 @@ fun QuizLayOutScreen(
                             isSelected && isCorrect -> Color.Green.copy(alpha = 0.2f)
                             isSelected -> Color.Red.copy(alpha = 0.2f)
                             else -> MaterialTheme.colorScheme.surface
-                        }
+                        },
+                        contentColor = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
                     Text(option)

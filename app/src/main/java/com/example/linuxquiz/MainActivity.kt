@@ -63,14 +63,10 @@ fun AppNav() {
             val topicId = backStack.arguments?.getInt("topicId") ?: 0
             val quizDao = QuizDataBase.getDatabase(context.applicationContext).quizDao()
             val viewModel: QuizViewModel = viewModel(
-                factory = object : ViewModelProvider.Factory {
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return QuizViewModel(quizDao) as T
-                    }
-                }
+                factory = QuizViewModel.QuizViewModelFactory(quizDao)
             )
-            Quiz1Screen(viewModel = viewModel, topicId)
+            Quiz1Screen(viewModel = viewModel, category = topicId)
+
         }
 
     }

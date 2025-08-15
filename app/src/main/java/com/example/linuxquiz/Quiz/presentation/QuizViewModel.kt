@@ -1,12 +1,14 @@
 package com.example.linuxquiz.Quiz.presentation
 
 import android.util.Log
+import androidx.compose.ui.unit.IntRect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.linuxquiz.Quiz.data.room.Question
 import com.example.linuxquiz.Quiz.data.room.Repository.QuizDao
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,21 +20,46 @@ class QuizViewModel(private val quizDao: QuizDao) : ViewModel() {
     private val _currentQuestionIndex = MutableStateFlow(0)
     val currentQuestionIndex: StateFlow<Int> get() = _currentQuestionIndex
 
+    private val _categoryKey = MutableStateFlow(0)
+    val categoryKey: StateFlow<Int> = _categoryKey
+
 
     fun loadCategory(categoryKey: Int) {
-        val currentQuestion = Category.questions[categoryKey] ?: emptyList()
-        Log.d("loadedCurrentQuestion","$currentQuestion" )
-
+        val questions = Category.questions[categoryKey] ?: emptyList()
+        _questions.value = questions
+        Log.d("QuizViewModel", "Loaded ${questions.size} questions for category $categoryKey")
     }
-    fun submitAnswer(selectedAnswerIndex : Int){
+    fun submitAnswer(selectedAnswerIndex: Int) {
         val currentQuestion = _questions.value.getOrNull(_currentQuestionIndex.value) ?: return
-        Log.d("DaoCurrentQuestion","$currentQuestion" )
-        if ( currentQuestion.correctAnswerIndex == selectedAnswerIndex) {
-            viewModelScope.launch {
-                quizDao.update(currentQuestion.copy(isCorrect = true))
+        Log.d("QuizViewModel", "Submitting answer: $selectedAnswerIndex for question: ${currentQuestion.id}")
+        
+        viewModelScope.launch {
+            try {
+                // Check if the answer is correct
+                val isCorrect = currentQuestion.correctAnswerIndex == selectedAnswerIndex
+                
+                // Log before updating
+                Log.d("QuizViewModel", "Updating question ${currentQuestion.id} with selectedAnswer: $selectedAnswerIndex, isCorrect: $isCorrect")
+                
+                // Update the question in the database with the new isCorrect value
+                quizDao.update(
+                    currentQuestion.copy(
+                        isCorrect = true
+                    )
+                )
+
+                Log.d("QuizViewModels", "Successfully updated question ${currentQuestion.id} in database")
+                
+                // Move to next question if available
+                if (_currentQuestionIndex.value < _questions.value.size - 1) {
+                    _currentQuestionIndex.value++
+                }
+                
+            } catch (e: Exception) {
+                Log.e("QuizViewModel", "Error updating question in database: ${e.message}")
+                e.printStackTrace()
             }
         }
-
     }
 
     companion object Category {
@@ -94,7 +121,7 @@ class QuizViewModel(private val quizDao: QuizDao) : ViewModel() {
                 @Suppress("UNCHECKED_CAST")
                 return QuizViewModel(quizDao) as T
             }
-            throw IllegalArgumentException("Unknown ViewModel class")
+            throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
 }
